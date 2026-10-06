@@ -1,0 +1,77 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Editors and IDEs
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+*.swp
+*.swo
+*~
+
+# PlatformIO and embedded builds
+.pio/
+.pioenvs/
+.piolibdeps/
+.cache/
+build/
+dist/
+*.elf
+*.hex
+*.bin
+*.map
+
+# C and C++ generated files
+*.o
+*.obj
+*.a
+*.lib
+*.d
+*.gcda
+*.gcno
+*.gcov
+compile_commands.json
+
+# Python helper tools
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+secrets.h
+credentials.h
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+tmp/
+temp/
+
+# Local document and presentation build artifacts
+.ppt-build/
+.codex-finalizer/
+**/qa_render_*/
+**/*_QA_*/
+
+# Test and coverage outputs
+coverage/
+htmlcov/
+.coverage
+test-results/
+
