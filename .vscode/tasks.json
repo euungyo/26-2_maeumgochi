@@ -1,0 +1,97 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "PlatformIO: 앱 빌드",
+      "type": "shell",
+      "command": "pio",
+      "args": ["run", "-d", "firmware", "-e", "xiao_esp32s3_plus"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "PlatformIO: 앱 업로드",
+      "type": "shell",
+      "command": "pio",
+      "args": [
+        "run",
+        "-d",
+        "firmware",
+        "-e",
+        "xiao_esp32s3_plus",
+        "-t",
+        "upload"
+      ],
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "PlatformIO: 시리얼 모니터",
+      "type": "shell",
+      "command": "pio",
+      "args": [
+        "device",
+        "monitor",
+        "-d",
+        "firmware",
+        "-e",
+        "xiao_esp32s3_plus"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: 진단 펌웨어 업로드",
+      "type": "shell",
+      "command": "pio",
+      "args": [
+        "run",
+        "-d",
+        "firmware",
+        "-e",
+        "${input:diagnosticEnvironment}",
+        "-t",
+        "upload"
+      ],
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "PlatformIO: 진단 시리얼 모니터",
+      "type": "shell",
+      "command": "pio",
+      "args": [
+        "device",
+        "monitor",
+        "-d",
+        "firmware",
+        "-e",
+        "${input:diagnosticEnvironment}"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "PlatformIO: PC 단위 테스트",
+      "type": "shell",
+      "command": "pio",
+      "args": ["test", "-d", "firmware", "-e", "native"],
+      "group": "test",
+      "problemMatcher": ["$gcc"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "diagnosticEnvironment",
+      "type": "pickString",
+      "description": "업로드하거나 모니터링할 진단 펌웨어를 선택하세요.",
+      "options": [
+        "i2c_scanner",
+        "bmi270_check",
+        "ltr390_check",
+        "pcf8523_check",
+        "l76k_check"
+      ],
+      "default": "i2c_scanner"
+    }
+  ]
+}
