@@ -1,0 +1,10 @@
+{
+  "C_Cpp.default.configurationProvider": "platformio.platformio-ide",
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.ino": "cpp"
+  },
+  "files.exclude": {
+    "**/.pio": true
+  }
+}

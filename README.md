@@ -75,5 +75,12 @@ docs/pin-map
 
 ## 개발 환경
 
-개발 프레임워크와 정확한 보드 설정은 팀 합의 후 `firmware/platformio.ini`에 추가합니다. 보드 설정을 확정하기 전까지는 특정 라이브러리와 핀 번호를 소스 코드에 고정하지 않습니다.
+펌웨어는 VS Code + PlatformIO + Arduino 프레임워크로 개발합니다. 대상 보드는 Seeed Studio
+XIAO ESP32-S3 Plus이며, 공통 보드·빌드·시리얼 설정은 `firmware/platformio.ini`와
+`firmware/boards`에 저장합니다. 설치 방법과 빌드·업로드·센서 진단 명령은
+[`firmware/README.md`](firmware/README.md)를 참고합니다.
+
+팀원이 각자 Arduino IDE에 라이브러리를 설치하는 방식은 사용하지 않습니다. 프로젝트에 필요한
+라이브러리는 실제 부품과 드라이버가 확정될 때 `platformio.ini`의 `lib_deps`에 버전과 함께
+등록합니다. 핀 번호는 `src/drivers` 또는 하드웨어 설정에 모으고 게임 핵심 로직에는 넣지 않습니다.
 
