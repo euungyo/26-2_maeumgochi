@@ -2,6 +2,9 @@
 
 #include <optional>
 #include <stdint.h>
+#include <vector>
+
+#include "core/mission_models.h"
 
 namespace maeumgochi {
 
@@ -9,5 +12,9 @@ namespace maeumgochi {
 // 한 값이라도 1이면 무리한 미션을 피하기 위해 난이도 1을 반환하고,
 // 그 외에는 두 값의 평균을 0.5부터 올림한다.
 std::optional<uint8_t> calculateMissionDifficulty(int mood, int energy);
+
+// 전체 카탈로그에서 지정한 시간대의 미션만 추린다.
+std::vector<const MissionDefinition*> filterMissionsByPeriod(
+    MissionPeriod period);
 
 }  // namespace maeumgochi

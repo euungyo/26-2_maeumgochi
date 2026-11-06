@@ -1,5 +1,7 @@
 #include "core/mission_generator.h"
 
+#include "core/mission_catalog.h"
+
 namespace maeumgochi {
 
 std::optional<uint8_t> calculateMissionDifficulty(int mood, int energy) {
@@ -16,6 +18,19 @@ std::optional<uint8_t> calculateMissionDifficulty(int mood, int energy) {
   }
 
   return static_cast<uint8_t>((mood + energy + 1) / 2);
+}
+
+std::vector<const MissionDefinition*> filterMissionsByPeriod(
+    MissionPeriod period) {
+  std::vector<const MissionDefinition*> candidates;
+
+  for (const auto& mission : missionCatalog()) {
+    if (mission.period == period) {
+      candidates.push_back(&mission);
+    }
+  }
+
+  return candidates;
 }
 
 }  // namespace maeumgochi

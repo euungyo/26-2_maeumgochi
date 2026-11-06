@@ -62,6 +62,32 @@ void test_difficulty_rejects_out_of_range_check_in() {
   TEST_ASSERT_FALSE(maeumgochi::calculateMissionDifficulty(3, 6).has_value());
 }
 
+void test_candidates_are_filtered_by_period() {
+  using maeumgochi::MissionPeriod;
+
+  const auto morning = maeumgochi::filterMissionsByPeriod(MissionPeriod::Morning);
+  const auto afternoon =
+      maeumgochi::filterMissionsByPeriod(MissionPeriod::Afternoon);
+  const auto special = maeumgochi::filterMissionsByPeriod(MissionPeriod::Special);
+
+  TEST_ASSERT_EQUAL_UINT32(5, morning.size());
+  TEST_ASSERT_EQUAL_UINT32(6, afternoon.size());
+  TEST_ASSERT_EQUAL_UINT32(2, special.size());
+
+  for (const auto* mission : morning) {
+    TEST_ASSERT_EQUAL_INT(static_cast<int>(MissionPeriod::Morning),
+                          static_cast<int>(mission->period));
+  }
+  for (const auto* mission : afternoon) {
+    TEST_ASSERT_EQUAL_INT(static_cast<int>(MissionPeriod::Afternoon),
+                          static_cast<int>(mission->period));
+  }
+  for (const auto* mission : special) {
+    TEST_ASSERT_EQUAL_INT(static_cast<int>(MissionPeriod::Special),
+                          static_cast<int>(mission->period));
+  }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -74,5 +100,6 @@ int main(int argc, char** argv) {
   RUN_TEST(test_difficulty_protects_lowest_check_in);
   RUN_TEST(test_difficulty_rounds_average_up);
   RUN_TEST(test_difficulty_rejects_out_of_range_check_in);
+  RUN_TEST(test_candidates_are_filtered_by_period);
   return UNITY_END();
 }
