@@ -1,6 +1,9 @@
 #include <unity.h>
 
 #include <cstring>
+#include <random>
+#include <set>
+#include <string_view>
 
 #include "core/mission_catalog.h"
 #include "core/mission_generator.h"
@@ -103,6 +106,81 @@ void test_previous_day_missions_are_excluded() {
   }
 }
 
+void test_selection_falls_back_to_lower_difficulty() {
+  std::mt19937 random(42);
+
+  const auto* morning = maeumgochi::selectMission(
+      maeumgochi::MissionPeriod::Morning, 5, {}, random);
+  const auto* special = maeumgochi::selectMission(
+      maeumgochi::MissionPeriod::Special, 5, {}, random);
+
+  TEST_ASSERT_NOT_NULL(morning);
+  TEST_ASSERT_NOT_NULL(special);
+  TEST_ASSERT_EQUAL_UINT8(1, morning->difficulty);
+  TEST_ASSERT_EQUAL_UINT8(2, special->difficulty);
+}
+
+void test_selection_excludes_yesterday_before_randomizing() {
+  std::mt19937 random(7);
+
+  const auto* mission = maeumgochi::selectMission(
+      maeumgochi::MissionPeriod::Afternoon, 3, {"shower"}, random);
+
+  TEST_ASSERT_NOT_NULL(mission);
+  TEST_ASSERT_EQUAL_STRING("cook", mission->id);
+}
+
+void test_same_difficulty_candidates_can_both_be_selected() {
+  std::set<std::string_view> selected;
+
+  for (uint32_t seed = 0; seed < 30; ++seed) {
+    std::mt19937 random(seed);
+    const auto* mission = maeumgochi::selectMission(
+        maeumgochi::MissionPeriod::Afternoon, 5, {}, random);
+    TEST_ASSERT_NOT_NULL(mission);
+    selected.insert(mission->id);
+  }
+
+  TEST_ASSERT_EQUAL_UINT32(2, selected.size());
+  TEST_ASSERT_EQUAL_UINT32(1, selected.count("walk"));
+  TEST_ASSERT_EQUAL_UINT32(1, selected.count("grocery"));
+}
+
+void test_daily_assignment_returns_one_mission_per_period() {
+  std::mt19937 random(11);
+
+  const auto assignment = maeumgochi::assignDailyMissions(
+      3, 3, {"make_bed", "shower", "water_plant"}, random);
+
+  TEST_ASSERT_TRUE(assignment.has_value());
+  TEST_ASSERT_EQUAL_UINT8(3, assignment->targetDifficulty);
+  TEST_ASSERT_EQUAL_INT(
+      static_cast<int>(maeumgochi::MissionPeriod::Morning),
+      static_cast<int>(assignment->missions[0]->period));
+  TEST_ASSERT_EQUAL_INT(
+      static_cast<int>(maeumgochi::MissionPeriod::Afternoon),
+      static_cast<int>(assignment->missions[1]->period));
+  TEST_ASSERT_EQUAL_INT(
+      static_cast<int>(maeumgochi::MissionPeriod::Special),
+      static_cast<int>(assignment->missions[2]->period));
+
+  for (const auto* mission : assignment->missions) {
+    TEST_ASSERT_NOT_EQUAL(0, std::strcmp("make_bed", mission->id));
+    TEST_ASSERT_NOT_EQUAL(0, std::strcmp("shower", mission->id));
+    TEST_ASSERT_NOT_EQUAL(0, std::strcmp("water_plant", mission->id));
+  }
+}
+
+void test_selection_fails_when_period_has_no_available_candidates() {
+  std::mt19937 random(1);
+
+  const auto* mission = maeumgochi::selectMission(
+      maeumgochi::MissionPeriod::Special, 2,
+      {"fishing", "water_plant"}, random);
+
+  TEST_ASSERT_NULL(mission);
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -117,5 +195,10 @@ int main(int argc, char** argv) {
   RUN_TEST(test_difficulty_rejects_out_of_range_check_in);
   RUN_TEST(test_candidates_are_filtered_by_period);
   RUN_TEST(test_previous_day_missions_are_excluded);
+  RUN_TEST(test_selection_falls_back_to_lower_difficulty);
+  RUN_TEST(test_selection_excludes_yesterday_before_randomizing);
+  RUN_TEST(test_same_difficulty_candidates_can_both_be_selected);
+  RUN_TEST(test_daily_assignment_returns_one_mission_per_period);
+  RUN_TEST(test_selection_fails_when_period_has_no_available_candidates);
   return UNITY_END();
 }
