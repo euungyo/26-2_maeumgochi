@@ -1,5 +1,7 @@
 #include "core/mission_generator.h"
 
+#include <algorithm>
+
 #include "core/mission_catalog.h"
 
 namespace maeumgochi {
@@ -31,6 +33,22 @@ std::vector<const MissionDefinition*> filterMissionsByPeriod(
   }
 
   return candidates;
+}
+
+std::vector<const MissionDefinition*> excludePreviousMissions(
+    const std::vector<const MissionDefinition*>& candidates,
+    const std::vector<std::string_view>& previousMissionIds) {
+  std::vector<const MissionDefinition*> available;
+
+  for (const auto* mission : candidates) {
+    const auto previous =
+        std::find(previousMissionIds.begin(), previousMissionIds.end(), mission->id);
+    if (previous == previousMissionIds.end()) {
+      available.push_back(mission);
+    }
+  }
+
+  return available;
 }
 
 }  // namespace maeumgochi

@@ -88,6 +88,21 @@ void test_candidates_are_filtered_by_period() {
   }
 }
 
+void test_previous_day_missions_are_excluded() {
+  using maeumgochi::MissionPeriod;
+
+  const auto afternoon =
+      maeumgochi::filterMissionsByPeriod(MissionPeriod::Afternoon);
+  const auto available = maeumgochi::excludePreviousMissions(
+      afternoon, {"shower", "walk", "unknown_mission"});
+
+  TEST_ASSERT_EQUAL_UINT32(4, available.size());
+  for (const auto* mission : available) {
+    TEST_ASSERT_NOT_EQUAL(0, std::strcmp("shower", mission->id));
+    TEST_ASSERT_NOT_EQUAL(0, std::strcmp("walk", mission->id));
+  }
+}
+
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -101,5 +116,6 @@ int main(int argc, char** argv) {
   RUN_TEST(test_difficulty_rounds_average_up);
   RUN_TEST(test_difficulty_rejects_out_of_range_check_in);
   RUN_TEST(test_candidates_are_filtered_by_period);
+  RUN_TEST(test_previous_day_missions_are_excluded);
   return UNITY_END();
 }

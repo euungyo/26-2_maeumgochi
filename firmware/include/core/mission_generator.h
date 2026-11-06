@@ -2,6 +2,7 @@
 
 #include <optional>
 #include <stdint.h>
+#include <string_view>
 #include <vector>
 
 #include "core/mission_models.h"
@@ -16,5 +17,10 @@ std::optional<uint8_t> calculateMissionDifficulty(int mood, int energy);
 // 전체 카탈로그에서 지정한 시간대의 미션만 추린다.
 std::vector<const MissionDefinition*> filterMissionsByPeriod(
     MissionPeriod period);
+
+// 전날 배정된 ID와 일치하는 미션을 후보에서 제외한다.
+std::vector<const MissionDefinition*> excludePreviousMissions(
+    const std::vector<const MissionDefinition*>& candidates,
+    const std::vector<std::string_view>& previousMissionIds);
 
 }  // namespace maeumgochi
