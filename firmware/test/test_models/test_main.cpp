@@ -2,6 +2,8 @@
 
 #include "core/models.h"
 
+
+
 namespace {
 void test_app_state_can_be_initialized() {
   AppState state{};
@@ -18,6 +20,9 @@ void test_mission_enums_are_distinct() {
   TEST_ASSERT_NOT_EQUAL(DIFFICULTY_EASY, DIFFICULTY_NORMAL);
 }
 }  // namespace
+
+extern "C" void setUp(void) {}
+extern "C" void tearDown(void) {}
 
 int main(int argc, char **argv) {
   (void)argc;
