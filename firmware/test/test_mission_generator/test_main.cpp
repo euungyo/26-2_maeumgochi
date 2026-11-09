@@ -48,14 +48,15 @@ void test_catalog_ids_are_unique() {
   }
 }
 
-void test_difficulty_protects_lowest_check_in() {
+void test_difficulty_uses_both_check_in_values() {
   const auto difficulty = maeumgochi::calculateMissionDifficulty(1, 5);
 
   TEST_ASSERT_TRUE(difficulty.has_value());
-  TEST_ASSERT_EQUAL_UINT8(1, *difficulty);
+  TEST_ASSERT_EQUAL_UINT8(3, *difficulty);
 }
 
 void test_difficulty_rounds_average_up() {
+  TEST_ASSERT_EQUAL_UINT8(1, *maeumgochi::calculateMissionDifficulty(1, 1));
   TEST_ASSERT_EQUAL_UINT8(3, *maeumgochi::calculateMissionDifficulty(2, 3));
   TEST_ASSERT_EQUAL_UINT8(5, *maeumgochi::calculateMissionDifficulty(5, 4));
 }
@@ -190,7 +191,7 @@ int main(int argc, char** argv) {
   UNITY_BEGIN();
   RUN_TEST(test_catalog_contains_all_planned_missions);
   RUN_TEST(test_catalog_ids_are_unique);
-  RUN_TEST(test_difficulty_protects_lowest_check_in);
+  RUN_TEST(test_difficulty_uses_both_check_in_values);
   RUN_TEST(test_difficulty_rounds_average_up);
   RUN_TEST(test_difficulty_rejects_out_of_range_check_in);
   RUN_TEST(test_candidates_are_filtered_by_period);

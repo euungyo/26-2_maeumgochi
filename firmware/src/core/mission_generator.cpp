@@ -48,10 +48,6 @@ std::optional<uint8_t> calculateMissionDifficulty(int mood, int energy) {
     return std::nullopt;
   }
 
-  if (mood == kMinimumCheckInValue || energy == kMinimumCheckInValue) {
-    return static_cast<uint8_t>(kMinimumCheckInValue);
-  }
-
   return static_cast<uint8_t>((mood + energy + 1) / 2);
 }
 
