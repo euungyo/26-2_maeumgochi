@@ -1,0 +1,26 @@
+# 마음고치 PostgreSQL (로컬 개발용)
+# 실행: server 폴더에서 `docker compose up -d`   끄기: `docker compose down`
+services:
+  db:
+    image: postgres:17
+    container_name: maeumgochi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-maeumgochi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-maeumgochi_local}
+      POSTGRES_DB: ${POSTGRES_DB:-maeumgochi}
+      TZ: Asia/Seoul
+    ports:
+      # 127.0.0.1에만 열어서 같은 WiFi의 다른 기기는 DB에 직접 못 붙게 함 (Node 서버만 접근)
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      # 데이터는 Docker 볼륨에 저장 → 컨테이너를 꺼도 유지, OneDrive 동기화와도 무관
+      - maeumgochi-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-maeumgochi} -d ${POSTGRES_DB:-maeumgochi}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  maeumgochi-pgdata:

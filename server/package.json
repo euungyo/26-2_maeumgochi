@@ -1,0 +1,19 @@
+{
+  "name": "maeumgochi-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "마음고치 로컬 서버 (Node.js + PostgreSQL)",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "start": "node src/server.js",
+    "test": "node test/smoke.test.js"
+  },
+  "dependencies": {
+    "pg": "^8.23.1"
+  }
+}
