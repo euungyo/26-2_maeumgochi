@@ -2,6 +2,8 @@
 // See docs/ui/README.md for the compile command.
 #include <cstdio>
 #include "ui/art/fishing_demo.h"
+#include "ui/screen_navigator.h"
+#include "ui/screen_renderer.h"
 
 static void saveBmp(const Adafruit_GFX& g, const char* name) {
   char fn[96]; snprintf(fn, sizeof fn, "%s.bmp", name);
@@ -43,6 +45,20 @@ int main() {
   SHOT("fishing3_bite", maeum_fish::fishScene(g, maeum_fish::BITE, 0.5f)) SHOT("fishing4_pull", maeum_fish::fishScene(g, maeum_fish::PULL, 0.0f))
   SHOT("fishing5_caught", maeum_fish::fishScene(g, maeum_fish::CAUGHT, 0.0f)) SHOT("fishing6_miss", maeum_fish::fishScene(g, maeum_fish::MISS, 0.0f))
 
-  puts("saved 37 BMP files in the current folder");
+  // UI 아트와 실제 화면 전환 상태 머신이 함께 컴파일되고 그려지는지 확인합니다.
+  ui::ScreenNavigator nav;
+  SHOT("nav01_checkin", ui::renderScreen(g, nav))
+  nav.completeCheckIn();
+  SHOT("nav02_main", ui::renderScreen(g, nav))
+  nav.handle(ui::NavInput::kLeftShort);
+  SHOT("nav03_life_menu", ui::renderScreen(g, nav))
+  nav.handle(ui::NavInput::kRightShort);
+  SHOT("nav04_life_menu_checkin", ui::renderScreen(g, nav))
+  nav.handle(ui::NavInput::kRightShort);
+  SHOT("nav05_life_menu_record", ui::renderScreen(g, nav))
+  nav.handle(ui::NavInput::kCenterShort);
+  SHOT("nav06_record", ui::renderScreen(g, nav))
+
+  puts("saved 43 BMP files in the current folder");
   return 0;
 }

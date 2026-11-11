@@ -1,11 +1,22 @@
 # 마음고치 UI 전달 문서 (아인)
 
 > 2026-11-11 프로젝트 반영 메모: 전달받은 원본을 저장소 구조에 맞게 나눠 배치했습니다.
-> 화면 코드는 `firmware/include/ui/art/`, PC 미리보기 도구는
-> `firmware/tools/ui_preview/`, 글꼴 생성 도구는 `firmware/tools/ui_font/`에 있습니다.
-> 이 브랜치는 UI 전달 파일 정리만 포함하며 앱·내비게이션 연결은 포함하지 않습니다.
+> 화면 코드는 `firmware/include/ui/art/`, 실제 `ScreenNavigator` 연결은
+> `firmware/include/ui/screen_renderer.h`와 `firmware/src/ui/screen_renderer.cpp`,
+> PC 미리보기 도구는 `firmware/tools/ui_preview/`, 글꼴 생성 도구는
+> `firmware/tools/ui_font/`에 있습니다. 이 문서의 `code/` 표기는 원본 전달 폴더 기준입니다.
 
-## PC에서 미리보기 확인
+## 프로젝트 연결 상태
+
+- 체크인, 메인, 생활 메뉴, 캐릭터 메뉴, 미션, 기록, 성장, 상점, 가방 화면을
+  현재 `ui::ScreenNavigator` 상태와 연결했습니다.
+- 생활 메뉴의 `기록` 항목도 내비게이션 상태에 추가했습니다.
+- 메뉴에서 선택 중인 항목은 내비게이터의 `menuIndex()`를 받아 강조합니다.
+- 시간, 코인, 미션명, 진행률 등 화면 데이터는 아직 전달 코드의 예시값입니다.
+  다음 단계에서는 코어 상태를 화면 전용 ViewModel로 바꿔 렌더러에 전달해야 합니다.
+- ST7789 초기화와 버튼 GPIO 연결은 실제 핀 확정 후 드라이버 계층에서 연결합니다.
+
+### PC에서 통합 미리보기 확인
 
 저장소의 `firmware/` 디렉터리에서 실행합니다.
 
@@ -13,6 +24,7 @@
 g++ -std=c++11 -Wall -Wextra -Werror \
   -I tools/ui_preview/host_mock -I include \
   tools/ui_preview/render_all.cpp \
+  src/ui/screen_navigator.cpp src/ui/screen_renderer.cpp \
   -o /tmp/maeumgochi-ui-render
 
 mkdir -p /tmp/maeumgochi-ui-preview
@@ -20,7 +32,7 @@ cd /tmp/maeumgochi-ui-preview
 /tmp/maeumgochi-ui-render
 ```
 
-총 37개 BMP가 생성됩니다.
+기존 37개 아트 화면과 내비게이터를 거친 6개 화면, 총 43개 BMP가 생성됩니다.
 
 회의에 참석하지 못해서 UI 파트를 한 곳에 정리했습니다. **결정이 필요한 것**(2번)만 먼저 봐주셔도 됩니다.
 
@@ -113,7 +125,7 @@ maeum_fish::fishScene(canvas, phase, t);
 tft.drawRGBBitmap(0, 0, canvas.getBuffer(), 240, 240);
 ```
 - PC 시뮬레이터·테스트용: 압축을 푼 폴더에서 아래 명령을 실행하면 모든 화면이 BMP 파일로 저장됩니다.
-위의 "PC에서 미리보기 확인" 명령을 사용합니다.
+위의 "PC에서 통합 미리보기 확인" 명령을 사용합니다.
 
 ## 6. 한글 글자 데이터
 - 기본 글자에는 한글이 없어서, GNU Unifont(16픽셀 도트 글꼴)에서 **화면에 쓰는 글자만** 뽑아 `ko_font.h`를 만듭니다.

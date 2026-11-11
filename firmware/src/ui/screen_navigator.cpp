@@ -5,7 +5,8 @@ namespace ui {
 namespace {
 
 // 메뉴 항목에 대응하는 화면입니다.
-constexpr Screen kLifeMenuItems[] = {Screen::kMissionList, Screen::kCheckIn};
+constexpr Screen kLifeMenuItems[] = {Screen::kMissionList, Screen::kCheckIn,
+                                     Screen::kRecord};
 constexpr Screen kCharacterMenuItems[] = {Screen::kStatus, Screen::kShop, Screen::kInventory};
 
 Screen parentOf(Screen screen) {
@@ -15,6 +16,7 @@ Screen parentOf(Screen screen) {
     case Screen::kMission:
       return Screen::kMain;
     case Screen::kMissionList:
+    case Screen::kRecord:
       return Screen::kLifeMenu;
     case Screen::kStatus:
     case Screen::kShop:
