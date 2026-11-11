@@ -75,8 +75,8 @@ inline void mainScreen(Adafruit_GFX& g) {
   hints(g, "생활", "미션", "캐릭터");
 }
 // ---------- 2, 3. menus ----------
-inline void lifeMenuScreen(Adafruit_GFX& g) { menuList(g, "생활", "미션", "체크인", "기록", 0); hints(g, "이전", "선택", "다음"); }
-inline void charMenuScreen(Adafruit_GFX& g) { menuList(g, "캐릭터", "성장", "상점", "가방", 1); hints(g, "이전", "선택", "다음"); }
+inline void lifeMenuScreen(Adafruit_GFX& g, int selected = 0) { menuList(g, "생활", "미션", "체크인", "기록", selected); hints(g, "이전", "선택", "다음"); }
+inline void charMenuScreen(Adafruit_GFX& g, int selected = 0) { menuList(g, "캐릭터", "성장", "상점", "가방", selected); hints(g, "이전", "선택", "다음"); }
 
 // ---------- 4. mission list ----------
 inline void missionListScreen(Adafruit_GFX& g) {

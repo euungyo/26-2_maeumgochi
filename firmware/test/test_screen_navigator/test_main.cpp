@@ -85,6 +85,18 @@ void test_life_menu_opens_mission_list() {
   TEST_ASSERT_EQUAL(Screen::kMissionList, nav.current());
 }
 
+void test_life_menu_opens_record_screen() {
+  ui::ScreenNavigator nav = mainScreenNavigator();
+  nav.handle(NavInput::kLeftShort);
+  nav.handle(NavInput::kRightShort);
+  nav.handle(NavInput::kRightShort);
+  nav.handle(NavInput::kCenterShort);
+  TEST_ASSERT_EQUAL(Screen::kRecord, nav.current());
+
+  nav.handle(NavInput::kCenterLong);
+  TEST_ASSERT_EQUAL(Screen::kLifeMenu, nav.current());
+}
+
 void test_menu_index_resets_after_leaving() {
   ui::ScreenNavigator nav = mainScreenNavigator();
   nav.handle(NavInput::kRightShort);
@@ -110,6 +122,7 @@ int main(int argc, char** argv) {
   RUN_TEST(test_menu_selection_wraps_around);
   RUN_TEST(test_select_menu_item_opens_shop_and_back_returns_to_menu);
   RUN_TEST(test_life_menu_opens_mission_list);
+  RUN_TEST(test_life_menu_opens_record_screen);
   RUN_TEST(test_menu_index_resets_after_leaving);
   return UNITY_END();
 }
