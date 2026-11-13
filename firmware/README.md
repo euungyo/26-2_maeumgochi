@@ -7,6 +7,8 @@
 ```text
 app -> core
 app -> hal
+app -> activity
+activity -> hal
 drivers -> hal
 ui -> core
 simulator -> core + hal
@@ -18,6 +20,7 @@ simulator -> core + hal
 
 - `include/core`: 핵심 자료형과 공개 헤더
 - `include/hal`: 장치 추상 인터페이스
+- `include/activity`, `src/activity`: 센서 값으로 걸음·움직임을 판정하는 로직 (Arduino 비의존)
 - `src/app`: 초기화 및 애플리케이션 실행 흐름
 - `src/core`: 게임 규칙 구현
 - `src/drivers`: ESP32 및 실제 장치 구현
