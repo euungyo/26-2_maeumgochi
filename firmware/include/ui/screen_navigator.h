@@ -13,6 +13,7 @@ enum class Screen : uint8_t {
   kCharacterMenu,
   kMission,
   kMissionList,
+  kRecord,
   kStatus,
   kShop,
   kInventory,

@@ -1,331 +1,516 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>마음고치 대시보드</title>
-<style>
-  :root {
-    --bg: #f6f5f1; --card: #ffffff; --text: #2c2c2a; --muted: #6b6a64; --line: #e3e1d9;
-    --accent: #1d9e75; --accent-soft: #e1f5ee; --sun: #ba7517; --sun-soft: #faeeda; --danger: #a32d2d;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: system-ui, -apple-system, "Malgun Gothic", sans-serif; background: var(--bg); color: var(--text); }
-  header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--card); border-bottom: 1px solid var(--line); }
-  header h1 { font-size: 20px; margin: 0; font-weight: 600; }
-  main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 16px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
-  .card h2 { font-size: 16px; margin: 0 0 12px; font-weight: 600; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-  input, select { padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 15px; background: #fff; }
-  button { padding: 9px 14px; border: 1px solid var(--accent); background: var(--accent); color: #fff; border-radius: 8px; font-size: 15px; cursor: pointer; }
-  button.ghost { background: transparent; color: var(--accent); }
-  button:disabled { opacity: .5; cursor: default; }
-  .msg { min-height: 20px; font-size: 14px; margin-top: 8px; }
-  .msg.err { color: var(--danger); }
-  .msg.ok { color: var(--accent); }
-  .muted { color: var(--muted); font-size: 14px; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
-  .stat .label { font-size: 13px; color: var(--muted); }
-  .stat .value { font-size: 26px; font-weight: 600; margin-top: 4px; }
-  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-  svg text { font-size: 11px; fill: var(--muted); }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); }
-  th { color: var(--muted); font-weight: 500; }
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; }
-  .pill.done { background: var(--accent-soft); color: #085041; }
-  .pill.start { background: var(--sun-soft); color: #633806; }
-  .hidden { display: none !important; }
-  a { color: var(--accent); }
-  code { background: #f1efe8; padding: 1px 6px; border-radius: 4px; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>마음고치 대시보드</title>
+  <style>
+    :root {
+      --bg: #f6f5f1;
+      --card: #ffffff;
+      --text: #2c2c2a;
+      --muted: #6b6a64;
+      --line: #e3e1d9;
+      --accent: #1d9e75;
+      --accent-soft: #e1f5ee;
+      --sun: #ba7517;
+      --sun-soft: #faeeda;
+      --danger: #a32d2d;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Malgun Gothic", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--card);
+      border-bottom: 1px solid var(--line);
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .card h2 {
+      font-size: 16px;
+      margin: 0 0 12px;
+      font-weight: 600;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input,
+    select {
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    button {
+      padding: 9px 14px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button.ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
+    .msg {
+      min-height: 20px;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .msg.err {
+      color: var(--danger);
+    }
+
+    .msg.ok {
+      color: var(--accent);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .stat .label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .stat .value {
+      font-size: 26px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .charts {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    svg text {
+      font-size: 11px;
+      fill: var(--muted);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 8px 6px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+
+    .pill.done {
+      background: var(--accent-soft);
+      color: #085041;
+    }
+
+    .pill.start {
+      background: var(--sun-soft);
+      color: #633806;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    code {
+      background: #f1efe8;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+  </style>
 </head>
+
 <body>
-<header>
-  <h1>마음고치 대시보드</h1>
-  <div class="row">
-    <span id="whoami" class="muted"></span>
-    <button id="logoutBtn" class="ghost hidden">로그아웃</button>
-  </div>
-</header>
+  <header>
+    <h1>마음고치 대시보드</h1>
+    <div class="row">
+      <span id="whoami" class="muted"></span>
+      <button id="logoutBtn" class="ghost hidden">로그아웃</button>
+    </div>
+  </header>
 
-<main>
-  <!-- 로그인 / 회원가입 -->
-  <section id="authView" class="card hidden">
-    <h2 id="authTitle">로그인</h2>
-    <form id="authForm" class="row">
-      <input id="username" placeholder="아이디 (영문/숫자 3~20자)" autocomplete="username" required>
-      <input id="password" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" required>
-      <button type="submit" id="authSubmit">로그인</button>
-    </form>
-    <div id="authMsg" class="msg"></div>
-    <p class="muted">
-      <span id="authSwitchText">계정이 없으면</span>
-      <a href="#" id="authSwitch">회원가입</a>
-    </p>
-  </section>
-
-  <!-- 로그인 후 화면 -->
-  <section id="appView" class="hidden" style="display:grid; gap:16px;">
-    <div class="card">
-      <h2>내 기기</h2>
-      <div id="deviceList" class="muted">불러오는 중...</div>
-      <form id="claimForm" class="row" style="margin-top:12px;">
-        <input id="claimCode" placeholder="기기 화면의 페어링 코드 6자리" maxlength="6" style="text-transform:uppercase;" required>
-        <button type="submit">기기 연결</button>
+  <main>
+    <!-- 로그인 / 회원가입 -->
+    <section id="authView" class="card hidden">
+      <h2 id="authTitle">로그인</h2>
+      <form id="authForm" class="row">
+        <input id="username" placeholder="아이디 (영문/숫자 3~20자)" autocomplete="username" required>
+        <input id="password" type="password" placeholder="비밀번호 (6자 이상)" autocomplete="current-password" required>
+        <button type="submit" id="authSubmit">로그인</button>
       </form>
-      <div id="claimMsg" class="msg"></div>
-    </div>
+      <div id="authMsg" class="msg"></div>
+      <p class="muted">
+        <span id="authSwitchText">계정이 없으면</span>
+        <a href="#" id="authSwitch">회원가입</a>
+      </p>
+    </section>
 
-    <div class="row" style="justify-content:space-between;">
-      <div class="row">
-        <label class="muted" for="days">기간</label>
-        <select id="days">
-          <option value="7">최근 7일</option>
-          <option value="14">최근 14일</option>
-          <option value="30">최근 30일</option>
-        </select>
+    <!-- 로그인 후 화면 -->
+    <section id="appView" class="hidden" style="display:grid; gap:16px;">
+      <div class="card">
+        <h2>내 기기</h2>
+        <div id="deviceList" class="muted">불러오는 중...</div>
+        <form id="claimForm" class="row" style="margin-top:12px;">
+          <input id="claimCode" placeholder="기기 화면의 페어링 코드 6자리" maxlength="6" style="text-transform:uppercase;"
+            required>
+          <button type="submit">기기 연결</button>
+        </form>
+        <div id="claimMsg" class="msg"></div>
       </div>
-      <div class="row">
-        <span id="updatedAt" class="muted"></span>
-        <button id="refreshBtn" class="ghost">새로고침</button>
+
+      <div class="row" style="justify-content:space-between;">
+        <div class="row">
+          <label class="muted" for="days">기간</label>
+          <select id="days">
+            <option value="7">최근 7일</option>
+            <option value="14">최근 14일</option>
+            <option value="30">최근 30일</option>
+          </select>
+        </div>
+        <div class="row">
+          <span id="updatedAt" class="muted"></span>
+          <button id="refreshBtn" class="ghost">새로고침</button>
+        </div>
       </div>
-    </div>
 
-    <div class="stats">
-      <div class="stat"><div class="label">오늘 걸음 수</div><div class="value" id="statStepsToday">-</div></div>
-      <div class="stat"><div class="label">기간 평균 걸음 수 / 일</div><div class="value" id="statStepsAvg">-</div></div>
-      <div class="stat"><div class="label">오늘 햇빛 쬔 시간</div><div class="value" id="statSunToday">-</div></div>
-      <div class="stat"><div class="label">기간 중 완료한 미션</div><div class="value" id="statMissions">-</div></div>
-    </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="label">오늘 걸음 수</div>
+          <div class="value" id="statStepsToday">-</div>
+        </div>
+        <div class="stat">
+          <div class="label">기간 평균 걸음 수 / 일</div>
+          <div class="value" id="statStepsAvg">-</div>
+        </div>
+        <div class="stat">
+          <div class="label">오늘 햇빛 쬔 시간</div>
+          <div class="value" id="statSunToday">-</div>
+        </div>
+        <div class="stat">
+          <div class="label">기간 중 완료한 미션</div>
+          <div class="value" id="statMissions">-</div>
+        </div>
+      </div>
 
-    <div class="charts">
-      <div class="card"><h2>일별 걸음 수</h2><div id="stepsChart"></div></div>
-      <div class="card"><h2>일별 햇빛 쬔 시간 (분)</h2><div id="sunChart"></div></div>
-    </div>
+      <div class="charts">
+        <div class="card">
+          <h2>일별 걸음 수</h2>
+          <div id="stepsChart"></div>
+        </div>
+        <div class="card">
+          <h2>일별 햇빛 쬔 시간 (분)</h2>
+          <div id="sunChart"></div>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>최근 미션 기록</h2>
-      <div id="missionList" class="muted">기록 없음</div>
-    </div>
-  </section>
-</main>
+      <div class="card">
+        <h2>최근 미션 기록</h2>
+        <div id="missionList" class="muted">기록 없음</div>
+      </div>
+    </section>
+  </main>
 
-<script>
-  const $ = (id) => document.getElementById(id);
-  let signupMode = false;
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let signupMode = false;
 
-  async function api(path, options = {}) {
-    const res = await fetch(path, {
-      ...options,
-      headers: options.body ? { "Content-Type": "application/json" } : undefined,
-      credentials: "same-origin",
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const err = new Error(data.detail || data.error || `HTTP ${res.status}`);
-      err.status = res.status;
-      throw err;
-    }
-    return data;
-  }
-
-  function showMsg(el, text, ok = false) {
-    el.textContent = text;
-    el.className = `msg ${ok ? "ok" : "err"}`;
-  }
-
-  // 로컬 날짜(YYYY-MM-DD)로 묶기
-  const localDay = (iso) => new Date(iso).toLocaleDateString("sv-SE");
-  const fmtTime = (iso) => new Date(iso).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
-
-  function lastNDays(n) {
-    const days = [];
-    for (let i = n - 1; i >= 0; i--) days.push(new Date(Date.now() - i * 86400000).toLocaleDateString("sv-SE"));
-    return days;
-  }
-
-  // ── 간단한 막대 그래프 (외부 라이브러리 없이 SVG로) ──
-  function barChart(container, labels, values, color, unit) {
-    const W = 520, H = 220, padL = 44, padB = 28, padT = 12;
-    const max = Math.max(1, ...values);
-    const bw = (W - padL - 8) / labels.length;
-    const ns = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    svg.setAttribute("width", "100%");
-    svg.setAttribute("role", "img");
-
-    const add = (tag, attrs, text) => {
-      const el = document.createElementNS(ns, tag);
-      for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
-      if (text !== undefined) el.textContent = text;
-      svg.appendChild(el);
-      return el;
-    };
-
-    for (const frac of [0, 0.5, 1]) {
-      const y = H - padB - frac * (H - padB - padT);
-      add("line", { x1: padL, x2: W - 4, y1: y, y2: y, stroke: "#e3e1d9", "stroke-width": 1 });
-      const tick = max * frac;
-      add("text", { x: padL - 6, y: y + 4, "text-anchor": "end" }, max >= 10 ? Math.round(tick) : Math.round(tick * 10) / 10);
-    }
-    const every = Math.ceil(labels.length / 7);
-    labels.forEach((label, i) => {
-      const v = values[i];
-      const h = (v / max) * (H - padB - padT);
-      const x = padL + i * bw + bw * 0.15;
-      const bar = add("rect", { x, y: H - padB - h, width: bw * 0.7, height: Math.max(h, 0), rx: 3, fill: color });
-      const title = document.createElementNS(ns, "title");
-      title.textContent = `${label}: ${v}${unit}`;
-      bar.appendChild(title);
-      if (i % every === 0 || i === labels.length - 1) {
-        add("text", { x: x + bw * 0.35, y: H - 8, "text-anchor": "middle" }, label.slice(5));
+    async function api(path, options = {}) {
+      const res = await fetch(path, {
+        ...options,
+        headers: options.body ? { "Content-Type": "application/json" } : undefined,
+        credentials: "same-origin",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const err = new Error(data.detail || data.error || `HTTP ${res.status}`);
+        err.status = res.status;
+        throw err;
       }
-    });
-    container.replaceChildren(svg);
-  }
+      return data;
+    }
 
-  // ── 화면 그리기 ──
-  async function loadDashboard() {
-    const days = Number($("days").value);
-    const [me, { readings }, { missions }] = await Promise.all([
-      api("/api/me"),
-      api(`/api/readings?days=${days}`),
-      api(`/api/missions?days=${days}`),
-    ]);
+    function showMsg(el, text, ok = false) {
+      el.textContent = text;
+      el.className = `msg ${ok ? "ok" : "err"}`;
+    }
 
-    $("whoami").textContent = `${me.username} 님`;
+    // 로컬 날짜(YYYY-MM-DD)로 묶기
+    const localDay = (iso) => new Date(iso).toLocaleDateString("sv-SE");
+    const fmtTime = (iso) => new Date(iso).toLocaleString("ko-KR", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
 
-    if (me.devices.length === 0) {
-      $("deviceList").textContent = "아직 연결된 기기가 없어. 기기 화면에 뜬 페어링 코드를 아래에 입력해 줘.";
-    } else {
-      const ul = document.createElement("ul");
-      for (const d of me.devices) {
-        const li = document.createElement("li");
-        li.textContent = `${d.id} · 마지막 수신: ${d.last_seen_at ? fmtTime(d.last_seen_at) : "아직 없음"}`;
-        ul.appendChild(li);
+    function lastNDays(n) {
+      const days = [];
+      for (let i = n - 1; i >= 0; i--) days.push(new Date(Date.now() - i * 86400000).toLocaleDateString("sv-SE"));
+      return days;
+    }
+
+    // ── 간단한 막대 그래프 (외부 라이브러리 없이 SVG로) ──
+    function barChart(container, labels, values, color, unit) {
+      const W = 520, H = 220, padL = 44, padB = 28, padT = 12;
+      const max = Math.max(1, ...values);
+      const bw = (W - padL - 8) / labels.length;
+      const ns = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(ns, "svg");
+      svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("role", "img");
+
+      const add = (tag, attrs, text) => {
+        const el = document.createElementNS(ns, tag);
+        for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
+        if (text !== undefined) el.textContent = text;
+        svg.appendChild(el);
+        return el;
+      };
+
+      for (const frac of [0, 0.5, 1]) {
+        const y = H - padB - frac * (H - padB - padT);
+        add("line", { x1: padL, x2: W - 4, y1: y, y2: y, stroke: "#e3e1d9", "stroke-width": 1 });
+        const tick = max * frac;
+        add("text", { x: padL - 6, y: y + 4, "text-anchor": "end" }, max >= 10 ? Math.round(tick) : Math.round(tick * 10) / 10);
       }
-      $("deviceList").replaceChildren(ul);
-    }
-
-    const labels = lastNDays(days);
-    const steps = Object.fromEntries(labels.map((d) => [d, 0]));
-    const sunSec = Object.fromEntries(labels.map((d) => [d, 0]));
-    for (const r of readings) {
-      const day = localDay(r.measured_at);
-      if (!(day in steps)) continue;
-      steps[day] += r.steps ?? 0;
-      sunSec[day] += r.sun_seconds ?? 0;
-    }
-    const today = labels[labels.length - 1];
-    const stepValues = labels.map((d) => steps[d]);
-    $("statStepsToday").textContent = steps[today].toLocaleString();
-    $("statStepsAvg").textContent = Math.round(stepValues.reduce((a, b) => a + b, 0) / days).toLocaleString();
-    $("statSunToday").textContent = `${Math.round(sunSec[today] / 60)}분`;
-    $("statMissions").textContent = missions.filter((m) => m.status === "completed").length;
-
-    barChart($("stepsChart"), labels, stepValues, "#1d9e75", "보");
-    barChart($("sunChart"), labels, labels.map((d) => Math.round(sunSec[d] / 60)), "#ef9f27", "분");
-
-    if (missions.length === 0) {
-      $("missionList").textContent = "기록 없음";
-    } else {
-      const table = document.createElement("table");
-      table.innerHTML = "<thead><tr><th>시각</th><th>미션</th><th>상태</th></tr></thead>";
-      const tbody = document.createElement("tbody");
-      for (const m of missions.slice(0, 20)) {
-        const tr = document.createElement("tr");
-        const cells = [fmtTime(m.occurred_at), m.mission];
-        for (const c of cells) {
-          const td = document.createElement("td");
-          td.textContent = c;
-          tr.appendChild(td);
+      const every = Math.ceil(labels.length / 7);
+      labels.forEach((label, i) => {
+        const v = values[i];
+        const h = (v / max) * (H - padB - padT);
+        const x = padL + i * bw + bw * 0.15;
+        const bar = add("rect", { x, y: H - padB - h, width: bw * 0.7, height: Math.max(h, 0), rx: 3, fill: color });
+        const title = document.createElementNS(ns, "title");
+        title.textContent = `${label}: ${v}${unit}`;
+        bar.appendChild(title);
+        if (i % every === 0 || i === labels.length - 1) {
+          add("text", { x: x + bw * 0.35, y: H - 8, "text-anchor": "middle" }, label.slice(5));
         }
-        const td = document.createElement("td");
-        const pill = document.createElement("span");
-        pill.className = `pill ${m.status === "completed" ? "done" : "start"}`;
-        pill.textContent = m.status === "completed" ? "완료" : "시작";
-        td.appendChild(pill);
-        tr.appendChild(td);
-        tbody.appendChild(tr);
+      });
+      container.replaceChildren(svg);
+    }
+
+    // ── 화면 그리기 ──
+    async function loadDashboard() {
+      const days = Number($("days").value);
+      const [me, { readings }, { missions }] = await Promise.all([
+        api("/api/me"),
+        api(`/api/readings?days=${days}`),
+        api(`/api/missions?days=${days}`),
+      ]);
+
+      $("whoami").textContent = `${me.username} 님`;
+
+      if (me.devices.length === 0) {
+        $("deviceList").textContent = "아직 연결된 기기가 없습니다. 기기 화면에 표시된 페어링 코드를 아래에 입력해 주세요.";
+      } else {
+        const ul = document.createElement("ul");
+        for (const d of me.devices) {
+          const li = document.createElement("li");
+          li.textContent = `${d.id} · 마지막 수신: ${d.last_seen_at ? fmtTime(d.last_seen_at) : "아직 없습니다"}`;
+          ul.appendChild(li);
+        }
+        $("deviceList").replaceChildren(ul);
       }
-      table.appendChild(tbody);
-      $("missionList").replaceChildren(table);
+
+      const labels = lastNDays(days);
+      const steps = Object.fromEntries(labels.map((d) => [d, 0]));
+      const sunSec = Object.fromEntries(labels.map((d) => [d, 0]));
+      for (const r of readings) {
+        const day = localDay(r.measured_at);
+        if (!(day in steps)) continue;
+        steps[day] += r.steps ?? 0;
+        sunSec[day] += r.sun_seconds ?? 0;
+      }
+      const today = labels[labels.length - 1];
+      const stepValues = labels.map((d) => steps[d]);
+      $("statStepsToday").textContent = steps[today].toLocaleString();
+      $("statStepsAvg").textContent = Math.round(stepValues.reduce((a, b) => a + b, 0) / days).toLocaleString();
+      $("statSunToday").textContent = `${Math.round(sunSec[today] / 60)}분`;
+      $("statMissions").textContent = missions.filter((m) => m.status === "completed").length;
+
+      barChart($("stepsChart"), labels, stepValues, "#1d9e75", "보");
+      barChart($("sunChart"), labels, labels.map((d) => Math.round(sunSec[d] / 60)), "#ef9f27", "분");
+
+      if (missions.length === 0) {
+        $("missionList").textContent = "기록 없음";
+      } else {
+        const table = document.createElement("table");
+        table.innerHTML = "<thead><tr><th>시각</th><th>미션</th><th>상태</th></tr></thead>";
+        const tbody = document.createElement("tbody");
+        for (const m of missions.slice(0, 20)) {
+          const tr = document.createElement("tr");
+          const cells = [fmtTime(m.occurred_at), m.mission];
+          for (const c of cells) {
+            const td = document.createElement("td");
+            td.textContent = c;
+            tr.appendChild(td);
+          }
+          const td = document.createElement("td");
+          const pill = document.createElement("span");
+          pill.className = `pill ${m.status === "completed" ? "done" : "start"}`;
+          pill.textContent = m.status === "completed" ? "완료" : "시작";
+          td.appendChild(pill);
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+        $("missionList").replaceChildren(table);
+      }
+      $("updatedAt").textContent = `업데이트 ${new Date().toLocaleTimeString("ko-KR")}`;
     }
-    $("updatedAt").textContent = `업데이트 ${new Date().toLocaleTimeString("ko-KR")}`;
-  }
 
-  function showApp(loggedIn) {
-    $("authView").classList.toggle("hidden", loggedIn);
-    $("appView").classList.toggle("hidden", !loggedIn);
-    $("logoutBtn").classList.toggle("hidden", !loggedIn);
-    if (!loggedIn) $("whoami").textContent = "";
-  }
-
-  async function refresh() {
-    try {
-      await loadDashboard();
-      showApp(true);
-    } catch (e) {
-      if (e.status === 401) showApp(false);
-      else $("updatedAt").textContent = `불러오기 실패: ${e.message}`;
+    function showApp(loggedIn) {
+      $("authView").classList.toggle("hidden", loggedIn);
+      $("appView").classList.toggle("hidden", !loggedIn);
+      $("logoutBtn").classList.toggle("hidden", !loggedIn);
+      if (!loggedIn) $("whoami").textContent = "";
     }
-  }
 
-  // ── 이벤트 ──
-  $("authSwitch").addEventListener("click", (e) => {
-    e.preventDefault();
-    signupMode = !signupMode;
-    $("authTitle").textContent = signupMode ? "회원가입" : "로그인";
-    $("authSubmit").textContent = signupMode ? "가입하기" : "로그인";
-    $("authSwitchText").textContent = signupMode ? "이미 계정이 있으면" : "계정이 없으면";
-    $("authSwitch").textContent = signupMode ? "로그인" : "회원가입";
-    $("authMsg").textContent = "";
-  });
+    async function refresh() {
+      try {
+        await loadDashboard();
+        showApp(true);
+      } catch (e) {
+        if (e.status === 401) showApp(false);
+        else $("updatedAt").textContent = `데이터를 불러오지 못했습니다: ${e.message}`;
+      }
+    }
 
-  $("authForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    try {
-      await api(signupMode ? "/api/signup" : "/api/login", {
-        method: "POST",
-        body: JSON.stringify({ username: $("username").value, password: $("password").value }),
-      });
-      $("password").value = "";
+    // ── 이벤트 ──
+    $("authSwitch").addEventListener("click", (e) => {
+      e.preventDefault();
+      signupMode = !signupMode;
+      $("authTitle").textContent = signupMode ? "회원가입" : "로그인";
+      $("authSubmit").textContent = signupMode ? "가입하기" : "로그인";
+      $("authSwitchText").textContent = signupMode ? "이미 계정이 있으면" : "계정이 없으면";
+      $("authSwitch").textContent = signupMode ? "로그인" : "회원가입";
       $("authMsg").textContent = "";
-      await refresh();
-    } catch (err) {
-      showMsg($("authMsg"), err.message);
-    }
-  });
+    });
 
-  $("claimForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    try {
-      const { device_id } = await api("/api/claim", {
-        method: "POST",
-        body: JSON.stringify({ code: $("claimCode").value }),
-      });
-      $("claimCode").value = "";
-      showMsg($("claimMsg"), `기기 ${device_id} 연결 완료!`, true);
-      await refresh();
-    } catch (err) {
-      showMsg($("claimMsg"), err.message);
-    }
-  });
+    $("authForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await api(signupMode ? "/api/signup" : "/api/login", {
+          method: "POST",
+          body: JSON.stringify({ username: $("username").value, password: $("password").value }),
+        });
+        $("password").value = "";
+        $("authMsg").textContent = "";
+        await refresh();
+      } catch (err) {
+        showMsg($("authMsg"), err.message);
+      }
+    });
 
-  $("logoutBtn").addEventListener("click", async () => {
-    await api("/api/logout", { method: "POST", body: "{}" }).catch(() => {});
-    showApp(false);
-  });
+    $("claimForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const { device_id } = await api("/api/claim", {
+          method: "POST",
+          body: JSON.stringify({ code: $("claimCode").value }),
+        });
+        $("claimCode").value = "";
+        showMsg($("claimMsg"), `기기 ${device_id}이(가) 연결되었습니다.`, true);
+        await refresh();
+      } catch (err) {
+        showMsg($("claimMsg"), err.message);
+      }
+    });
 
-  $("days").addEventListener("change", refresh);
-  $("refreshBtn").addEventListener("click", refresh);
-  setInterval(() => { if (!$("appView").classList.contains("hidden")) refresh(); }, 60000);
+    $("logoutBtn").addEventListener("click", async () => {
+      await api("/api/logout", { method: "POST", body: "{}" }).catch(() => { });
+      showApp(false);
+    });
 
-  refresh();
-</script>
+    $("days").addEventListener("change", refresh);
+    $("refreshBtn").addEventListener("click", refresh);
+    setInterval(() => { if (!$("appView").classList.contains("hidden")) refresh(); }, 60000);
+
+    refresh();
+  </script>
 </body>
+
 </html>
