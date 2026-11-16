@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Arduino.h>
+
 namespace board {
 constexpr int kButtonLeft = D0;
 constexpr int kButtonCenter = D2;
