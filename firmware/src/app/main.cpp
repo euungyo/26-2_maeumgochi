@@ -1,8 +1,37 @@
 #include <Arduino.h>
+#include <Wire.h>
+
+#include "app/app_controller.h"
+#include "drivers/board_pins.h"
+#include "drivers/gpio_buttons.h"
+#include "drivers/gpio_haptic.h"
+#include "drivers/ltr390_sensor.h"
+#include "drivers/nvs_storage.h"
+#include "drivers/pcf8523_clock.h"
+#include "drivers/st7789_display.h"
+#include "ui/screen_renderer.h"
 
 namespace {
-constexpr unsigned long kHeartbeatIntervalMs = 5000;
-unsigned long lastHeartbeatMs = 0;
+
+drivers::St7789Config makeDisplayConfig() {
+  drivers::St7789Config config;
+  config.sck = board::kLcdSck;
+  config.mosi = board::kLcdMosi;
+  config.rst = board::kLcdRes;
+  config.dc = board::kLcdDc;
+  config.cs = board::kLcdCs;
+  return config;
+}
+
+drivers::St7789Display display(makeDisplayConfig());
+drivers::GpioButtons buttons(board::kButtonLeft, board::kButtonCenter, board::kButtonRight);
+drivers::GpioHaptic haptic(board::kHapticGate);
+drivers::Ltr390Sensor light;
+drivers::Pcf8523Clock rtc;
+drivers::NvsStorage storage;
+
+app::AppController* controller = nullptr;
+bool displayReady = false;
 
 void waitForSerial(unsigned long timeoutMs) {
   const unsigned long startedAt = millis();
@@ -11,31 +40,38 @@ void waitForSerial(unsigned long timeoutMs) {
   }
 }
 
-void printBoardInfo() {
-  Serial.println();
-  Serial.println("=== Maeumgochi firmware ===");
-  Serial.printf("Chip: %s, revision %d, %d core(s)\n", ESP.getChipModel(),
-                ESP.getChipRevision(), ESP.getChipCores());
-  Serial.printf("Flash: %lu MB\n", ESP.getFlashChipSize() / (1024U * 1024U));
-  Serial.printf("PSRAM: %lu MB\n", ESP.getPsramSize() / (1024U * 1024U));
-  Serial.println("Status: app skeleton is running");
-}
 }  // namespace
 
 void setup() {
   Serial.begin(115200);
   waitForSerial(2000);
-  printBoardInfo();
-  lastHeartbeatMs = millis();
+  Serial.println();
+  Serial.println("=== Maeumgochi firmware ===");
+
+  Wire.begin(SDA, SCL);
+  buttons.begin();
+
+  displayReady = display.begin();
+  if (!displayReady) {
+    Serial.println("ERROR: display.begin() failed. Running without a screen.");
+  }
+
+  app::Devices devices;
+  devices.storage = &storage;
+  devices.haptic = &haptic;
+  devices.light = &light;  // 센서가 없어도 컨트롤러가 계속 동작합니다.
+  devices.buttons = &buttons;
+  devices.clock = &rtc;
+  controller = new app::AppController(devices, esp_random());
+  controller->begin(millis());
 }
 
 void loop() {
-  const unsigned long now = millis();
-  if (now - lastHeartbeatMs >= kHeartbeatIntervalMs) {
-    lastHeartbeatMs = now;
-    Serial.printf("[heartbeat] uptime=%lu s, free_heap=%lu bytes\n", now / 1000,
-                  ESP.getFreeHeap());
-  }
+  controller->update(millis());
 
-  delay(10);
+  if (displayReady && controller->consumeRedraw()) {
+    ui::renderScreen(display.canvas(), controller->navigator(), controller->viewModel());
+    display.present();
+  }
+  delay(5);
 }
